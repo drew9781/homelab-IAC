@@ -1,0 +1,26 @@
+---
+- name: dns01
+  hosts: ns01
+  remote_user: aenglema
+  become: yes
+  vars:
+    bind_zones:
+      - name: 'internal.aenglema.com'
+        primaries:
+          - 192.168.1.12
+        networks:
+          - '192.168.1'
+        name_servers:
+          - ns01.internal.aenglema.com.
+        hostmaster_email: admin
+        hosts:
+          - name: pve
+            ip: 192.168.1.33
+          - name: ns01
+            ip: 192.168.1.12
+        # mail_servers:
+        #     - name: mail001
+        #     preference: 10
+        # Primary server for domain acme-inc.com (specify zone type explicitly)
+  roles:
+    - role: bind

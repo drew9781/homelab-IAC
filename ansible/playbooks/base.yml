@@ -1,0 +1,26 @@
+---
+- name: Setup Base VM settings
+  hosts: all
+  remote_user: aenglema
+  become: yes
+  tasks:
+    - name: Install nagios nrpe
+      apt:
+        name: nagios-nrpe-server
+        state: present
+    - apt: 
+        name: nagios-nrpe-plugin
+        state: present
+    - copy:
+        src: files/nagios/nrpe.cfg
+        dest: /etc/nagios/nrpe.cfg
+        owner: root
+        group: root
+        mode: 0644
+      notify: 
+        - restart nagios-nrpe-server
+  handlers:
+    - name: restart nagios-nrpe-server
+      ansible.builtin.service:
+        name: nagios-nrpe-server
+        state: restarted

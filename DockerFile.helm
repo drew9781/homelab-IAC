@@ -1,0 +1,6 @@
+FROM drew9781/proxmox-terraform:1.1
+
+COPY helm.tf .
+COPY kubectl.conf .
+
+RUN terraform init 

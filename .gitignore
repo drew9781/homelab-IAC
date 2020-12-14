@@ -1,0 +1,11 @@
+terraform.tfstate*
+json.test
+**/.terraform
+.gitsecret/keys/random_seed
+secrets/proxmox.tfvars
+secrets/dns.tfvars
+secrets/aws.creds
+secrets/id_rsa
+secrets/ansible_postgres.yml
+secrets/kubectl.conf
+secrets/kubctl.conf

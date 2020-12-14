@@ -1,0 +1,12 @@
+---
+- name: configure iptables to recieve  bridged network traffic
+  copy:
+    dest: /etc/ufw/sysctl.conf
+    content: |
+      net/bridge/bridge-nf-call-ip6tables = 1
+      net/bridge/bridge-nf-call-iptables = 1
+      net/bridge/bridge-nf-call-arptables = 1
+  become: yes
+  notify: reboot
+
+

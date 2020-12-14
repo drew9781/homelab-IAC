@@ -1,0 +1,50 @@
+---
+- name: install docker.io
+  apt:
+    name: docker.io
+  become: yes
+
+- name: install docker
+  apt:
+    name: docker
+  become: yes
+
+- service: 
+    name: docker.service
+    enabled: yes
+  become: yes
+
+- name: install HTTPS supoort
+  apt:
+    name: apt-transport-https
+  become: yes
+
+- name: install curl
+  apt:
+    name: curl
+  become: yes
+
+- name: retieve key for kubernetes repo
+  shell: "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -"
+  become: yes
+
+- name: add kubernetes repo
+  apt_repository:
+    repo: 'deb http://apt.kubernetes.io/ kubernetes-xenial main'
+    state: present
+    filename: kubernetes
+    update_cache: yes
+  become: yes
+
+- name: install kubelet, kubeadm, kubectl
+  apt:
+    name: kubelet
+  become: yes
+
+- apt: 
+    name: kubeadm
+  become: yes
+
+- apt:
+    name: kubectl
+  become: yes

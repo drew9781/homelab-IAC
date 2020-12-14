@@ -1,0 +1,7 @@
+- hosts: postgres-master
+  remote_user: aenglema
+  become: yes
+  vars_files:
+    - vars/ansible_postgres.yml
+  roles:
+    - postgresql

@@ -1,0 +1,1 @@
+docker build -t drew9781/terraform-proxmox:latest .

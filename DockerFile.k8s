@@ -1,0 +1,11 @@
+FROM drew9781/proxmox-terraform:1.1
+
+RUN rm -r /ansible
+
+COPY k8s.tf .
+COPY proxmox.tfvars .
+COPY ansible /ansible
+COPY ansible/ansible.cfg /etc/ansible/ansible.cfg
+
+RUN terraform init && \
+    ansible-galaxy install -r /ansible/requirements.yml 

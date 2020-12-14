@@ -1,0 +1,11 @@
+---
+- name: disable swap
+  shell: /sbin/swapoff -a
+  become: yes
+ 
+- name: take swap out of fstab
+  replace: 
+    dest: /etc/fstab
+    regexp: '(.*swap.*)'
+    replace: '#\1'
+  become: yes

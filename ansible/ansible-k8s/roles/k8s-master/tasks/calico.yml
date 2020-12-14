@@ -1,0 +1,27 @@
+---
+- name: kubeadm init
+  shell: kubeadm init --pod-network-cidr=192.168.0.0/16
+  become: yes
+
+- name: set up kubeadm for non-root
+  shell: mkdir -p /home/aenglema/.kube
+ 
+- shell: cp -i /etc/kubernetes/admin.conf /home/aenglema/.kube/config
+  become: yes
+
+- shell: chown aenglema:aenglema /home/aenglema/.kube/config
+  become: yes
+
+- name: kubectl apply
+  shell: kubectl create -f https://docs.projectcalico.org/manifests/tigera-operator.yaml
+
+- shell: kubectl create -f https://docs.projectcalico.org/manifests/custom-resources.yaml
+
+#- name: get join command
+#  shell: kubeadm token create --print-join-command
+#  register: join_command_raw
+
+#- name: set join command
+#  set_fact:
+#    join_command: "{{ join_command_raw.stdout_lines[0] }}"
+

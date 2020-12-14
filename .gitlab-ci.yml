@@ -1,0 +1,32 @@
+image:
+  name: drew9781/terraform-ansible-runner
+
+
+before_script:
+  - pip3 install awscli
+  - git config --global http.sslVerify false
+
+stages:
+  - init
+  - validate
+  - plan
+
+init:
+  stage: init
+  script:
+    - terraform init
+
+validate: 
+  stage: validate
+  script:
+    - terraform validate
+
+plan:
+  stage: plan
+  script:
+    - terraform plan -var-file homelabe-secrets/proxmox.tfvars -out "planfile"
+  dependencies:
+    - validate
+  artifacts:
+    paths:
+      - planfile

@@ -1,0 +1,5 @@
+---
+# tasks file for ./ubuntu-k8s-install
+- include: swap-off.yml
+- include: net-bridge.yml
+- include: kubeadm-install.yml
