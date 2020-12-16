@@ -26,7 +26,27 @@ resource "helm_release" "redis" {
   repository = "https://charts.bitnami.com/bitnami"
   set {
     name  = "password"
-    value = "978!@Shln"
+    value = "978!@Shlyn"
+  }
+  set {
+    name = "global.storageClass"
+    value = "managed-nfs-storage"
+  }
+  set {
+    name = "master.service.type"
+    value = "LoadBalancer"
+  }
+  set {
+    name = "master.service.loadBalancerIP"
+    value = "192.168.1.122"
+  }
+  set {
+    name = "slave.service.type"
+    value = "LoadBalancer"
+  }
+  set {
+    name = "slave.service.loadBalancerIP"
+    value = "192.168.1.123"
   }
 
 }
