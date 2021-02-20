@@ -1,4 +1,4 @@
-FROM drew9781/proxmox-terraform:1.1
+FROM drew9781/proxmox-terraform:latest
 
 COPY helm.tf .
 COPY kubectl.conf .

@@ -50,3 +50,33 @@ resource "helm_release" "redis" {
   }
 
 }
+resource "helm_release" "cds-redis" {
+  name       = "cds-redis"
+  chart      = "redis"
+  repository = "https://charts.bitnami.com/bitnami"
+  set {
+    name  = "password"
+    value = "0Q8JQ60O1Nk2"
+  }
+  set {
+    name = "global.storageClass"
+    value = "managed-nfs-storage"
+  }
+  set {
+    name = "master.service.type"
+    value = "LoadBalancer"
+  }
+  set {
+    name = "master.service.loadBalancerIP"
+    value = "192.168.1.124"
+  }
+  set {
+    name = "slave.service.type"
+    value = "LoadBalancer"
+  }
+  set {
+    name = "slave.service.loadBalancerIP"
+    value = "192.168.1.125"
+  }
+
+}

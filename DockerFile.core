@@ -1,4 +1,4 @@
-FROM drew9781/proxmox-terraform:1.1
+FROM drew9781/proxmox-terraform:latest
 
 RUN rm -r /ansible
 

@@ -1,6 +1,6 @@
-variable "pm_api_url" { type = "string" }
-variable "pm_password"{ type = "string" }
-variable "pm_user"{ type = "string"}
+variable "pm_api_url" { type = string }
+variable "pm_password"{ type = string }
+variable "pm_user"{ type = string}
 variable "clone_id"{}
 variable "vm_storage_location"{default = "local"}
 variable "ci_user"{}
@@ -21,8 +21,8 @@ terraform {
   }
     required_providers {
       proxmox = {
-       source  = "terraform.example.com/telmate/proxmox"
-        version = ">=1.0.0"
+       source  = "Telmate/proxmox"
+        version = "2.6.4"
     }
     icinga2 = {
       source = "Icinga/icinga2"
@@ -36,16 +36,16 @@ provider "proxmox"{
   pm_tls_insecure = true
   
     // Credentials here or environment
-    pm_api_url  =  "${var.pm_api_url}"
-    pm_password =  "${var.pm_password}"
-    pm_user     =  "${var.pm_user}"
+    pm_api_url  =  var.pm_api_url
+    pm_password =  var.pm_password
+    pm_user     =  var.pm_user
 
 }
 
 provider "icinga2" {
   api_url                  = "https://icinga.internal.aenglema.com:5665/v1"
   api_user                 = "admin"
-  api_password             = "${var.icinga_api_password}"
+  api_password             = var.icinga_api_password
   insecure_skip_tls_verify = true
 }
 
@@ -54,7 +54,7 @@ provider "dns" {
     server        = "192.168.1.12"
     key_name      = "aenglema."
     key_algorithm = "hmac-md5"
-    key_secret    = "${var.dns_key_secret}"
+    key_secret    = var.dns_key_secret
   }
 }
 
@@ -99,7 +99,7 @@ resource "proxmox_vm_qemu" "ns01" {
     desc = "Debian 10 x86_64 template built with packer (). Username: aenglema"
     target_node = "pve"
 
-    clone = "${var.clone_id}"
+    clone = var.clone_id
     cores = 2
     sockets = 1
     memory = 2560
@@ -108,31 +108,29 @@ resource "proxmox_vm_qemu" "ns01" {
     bootdisk        = "scsi0"
 
     disk {
-        id = 0
         type = "virtio"
-        size = 12
-        storage = "${var.vm_storage_location}"
+        size = "12G"
+        storage = var.vm_storage_location
     }
     network {
-        id = 0
         model = "virtio"
         bridge = "vmbr0"
         macaddr = "C2:87:CA:1A:63:A4"
         queues = 0
         rate = 0
-        tag = 0
+        tag = -1
     }
 
-    ssh_user        = "${var.ssh_user}"
-    ssh_private_key = "${var.ssh_private}"
+    ssh_user        = var.ssh_user
+    ssh_private_key = var.ssh_private
 
     os_type = "cloud-init"
     ipconfig0 = "ip=192.168.1.12/24,gw=192.168.1.1"
     nameserver = "192.168.1.11"
 
-    ciuser     = "${var.ci_user}"
+    ciuser     = var.ci_user
     cipassword = "**********"
-    sshkeys    = "${var.ssh_public}"
+    sshkeys    = var.ssh_public
 
     //post run commands
     provisioner "remote-exec" {
@@ -143,8 +141,8 @@ resource "proxmox_vm_qemu" "ns01" {
     connection {
         host = "192.168.1.12"
         type = "ssh"
-        user = "${var.ci_user}"
-        private_key = "${var.ssh_private}"
+        user = var.ci_user
+        private_key = var.ssh_private
     }
 
 }
@@ -154,7 +152,7 @@ resource "proxmox_vm_qemu" "icinga" {
     desc = "Debian 10 x86_64 template built with packer (). Username: aenglema"
     target_node = "pve"
 
-    clone = "${var.clone_id}"
+    clone = var.clone_id
     cores = 2
     sockets = 1
     memory = 4800
@@ -164,31 +162,29 @@ resource "proxmox_vm_qemu" "icinga" {
 
 
     disk {
-        id = 0
         type = "virtio"
-        size = 12
-        storage = "${var.vm_storage_location}"
+        size = "12G"
+        storage = var.vm_storage_location
     }
     network {
-        id = 0
         model = "virtio"
         bridge = "vmbr0"
         macaddr = "C2:87:CA:1A:63:A6"
         queues = 0
         rate = 0
-        tag = 0
+        tag = -1
     }
 
-    ssh_user        = "${var.ssh_user}"
-    ssh_private_key = "${var.ssh_private}"
+    ssh_user        = var.ssh_user
+    ssh_private_key = var.ssh_private
 
     os_type = "cloud-init"
     ipconfig0 = "ip=192.168.1.14/24,gw=192.168.1.1"
     nameserver = "192.168.1.12"
 
-    ciuser     = "${var.ci_user}"
-    # cipassword = "${var.ci_pass}"
-    sshkeys    = "${var.ssh_public}"
+    ciuser     = var.ci_user
+    # cipassword = var.ci_pass
+    sshkeys    = var.ssh_public
 
     //post run commands
     provisioner "remote-exec" {
@@ -199,8 +195,8 @@ resource "proxmox_vm_qemu" "icinga" {
     connection {
         host = "192.168.1.14"
         type = "ssh"
-        user = "${var.ci_user}"
-        private_key = "${var.ssh_private}"
+        user = var.ci_user
+        private_key = var.ssh_private
     }
 
 }
@@ -210,7 +206,7 @@ resource "proxmox_vm_qemu" "postgres-master" {
     desc = "Debian 10 x86_64 template built with packer (). Username: aenglema"
     target_node = "pve"
 
-    clone = "${var.clone_id}"
+    clone = var.clone_id
     cores = 6
     sockets = 1
     memory = 8192
@@ -220,31 +216,27 @@ resource "proxmox_vm_qemu" "postgres-master" {
 
 
     disk {
-        id = 0
         type = "virtio"
-        size = 12
-        storage = "${var.vm_storage_location}"
+        size = "12G"
+        storage = var.vm_storage_location
     }
     network {
-        id = 0
         model = "virtio"
         bridge = "vmbr0"
         macaddr = "C2:87:CA:1A:63:A8"
-        queues = 0
-        rate = 0
-        tag = 0
+        tag = -1
     }
 
-    ssh_user        = "${var.ssh_user}"
-    ssh_private_key = "${var.ssh_private}"
+    ssh_user        = var.ssh_user
+    ssh_private_key = var.ssh_private
 
     os_type = "cloud-init"
     ipconfig0 = "ip=192.168.1.65/24,gw=192.168.1.1"
     nameserver = "192.168.1.12"
 
-    ciuser     = "${var.ci_user}"
-    cipassword = "**********"
-    sshkeys    = "${var.ssh_public}"
+    ciuser     = var.ci_user
+    cipassword = var.ci_pass
+    sshkeys    = var.ssh_public
 
     //post run commands
     provisioner "remote-exec" {
@@ -255,8 +247,8 @@ resource "proxmox_vm_qemu" "postgres-master" {
     connection {
         host = "192.168.1.65"
         type = "ssh"
-        user = "${var.ci_user}"
-        private_key = "${var.ssh_private}"
+        user = var.ci_user
+        private_key = var.ssh_private
     }
 
 }
@@ -283,7 +275,7 @@ resource "proxmox_vm_qemu" "ipa" {
     desc = "Debian 10 x86_64 template built with packer (). Username: aenglema"
     target_node = "pve"
 
-    clone = "${var.clone_id}"
+    clone = var.clone_id
     cores = 2
     sockets = 1
     memory = 2560
@@ -293,31 +285,27 @@ resource "proxmox_vm_qemu" "ipa" {
 
 
     disk {
-        id = 0
         type = "virtio"
-        size = 12
-        storage = "${var.vm_storage_location}"
+        size = "12G"
+        storage = var.vm_storage_location
     }
     network {
-        id = 0
         model = "virtio"
         bridge = "vmbr0"
         macaddr = "C2:87:CA:1A:63:A8"
-        queues = 0
-        rate = 0
-        tag = 0
+        tag = -1
     }
 
-    ssh_user        = "${var.ssh_user}"
-    ssh_private_key = "${var.ssh_private}"
+    ssh_user        = var.ssh_user
+    ssh_private_key = var.ssh_private
 
     os_type = "cloud-init"
     ipconfig0 = "ip=192.168.1.66/24,gw=192.168.1.1"
     nameserver = "192.168.1.12"
 
-    ciuser     = "${var.ci_user}"
-    cipassword = "${var.ci_pass}"
-    sshkeys    = "${var.ssh_public}"
+    ciuser     = var.ci_user
+    cipassword = var.ci_pass
+    sshkeys    = var.ssh_public
 
     //post run commands
     provisioner "remote-exec" {
@@ -328,8 +316,8 @@ resource "proxmox_vm_qemu" "ipa" {
     connection {
         host = "192.168.1.66"
         type = "ssh"
-        user = "${var.ci_user}"
-        private_key = "${var.ssh_private}"
+        user = var.ci_user
+        private_key = var.ssh_private
     }
 
 }
@@ -352,13 +340,81 @@ resource "dns_a_record_set" "ipa"{
     ttl = 300
 }
 
+resource "proxmox_vm_qemu" "cds" {
+    name = "cds.internal.aenglema.com"
+    desc = "Debian 10 x86_64 template built with packer (). Username: aenglema"
+    target_node = "pve"
+
+    clone = var.clone_id
+    cores = 4
+    sockets = 1
+    memory = 4800
+
+    scsihw          = "virtio-scsi-pci"
+    bootdisk        = "scsi0"
+
+
+    disk {
+        type = "virtio"
+        size = "12G"
+        storage = var.vm_storage_location
+    }
+    network {
+        model = "virtio"
+        bridge = "vmbr0"
+    }
+
+    ssh_user        = var.ssh_user
+    ssh_private_key = var.ssh_private
+
+    os_type = "cloud-init"
+    ipconfig0 = "ip=192.168.1.70/24,gw=192.168.1.1"
+    nameserver = "192.168.1.12"
+
+    ciuser     = var.ci_user
+    cipassword = var.ci_pass
+    sshkeys    = var.ssh_public
+
+    //post run commands
+    provisioner "remote-exec" {
+        inline = [
+        "ip a"
+        ]
+    }
+    connection {
+        host = "192.168.1.70"
+        type = "ssh"
+        user = var.ci_user
+        private_key = var.ssh_private
+    }
+
+}
+
+resource "icinga2_host" "cds" {
+  hostname      = "cds"
+  address       = "192.168.1.70"
+  check_command = "hostalive"
+  templates     = ["generic-host-production"]
+
+  vars = {
+    os        = "Linux"
+  }
+}
+
+resource "dns_a_record_set" "cds"{
+    zone = "internal.aenglema.com."
+    name = "cds"
+    addresses = ["192.168.1.70"]
+    ttl = 300
+}
+
 
 # resource "proxmox_vm_qemu" "jira" {
 #     name = "jira.aenglema.com"
 #     desc = ""
 #     target_node = "pve"
 
-#     clone = "${var.clone_id}"
+#     clone = var.clone_id
 #     cores = 2
 #     sockets = 1
 #     memory = 2560
@@ -366,8 +422,8 @@ resource "dns_a_record_set" "ipa"{
 #     disk {
 #         id = 0
 #         type = "scsi"
-#         size = 12
-#         storage = "${var.vm_storage_location}"
+#         size = "12G"
+#         storage = var.vm_storage_location
 #     }
 #     network {
 #         id = 0
@@ -379,16 +435,16 @@ resource "dns_a_record_set" "ipa"{
 #         tag = 0
 #     }
 
-#     ssh_user        = "${var.ssh_user}"
-#     ssh_private_key = "${var.ssh_private}"
+#     ssh_user        = var.ssh_user
+#     ssh_private_key = var.ssh_private
 
 #     os_type = "cloud-init"
 #     ipconfig0 = "ip=192.168.1.16/24,gw=192.168.1.1"
 #     nameserver = "192.168.1.11"
 
-#     ciuser     = "${var.ci_user}"
-#     cipassword = "${var.ci_pass}"
-#     sshkeys = "${var.ssh_public}"
+#     ciuser     = var.ci_user
+#     cipassword = var.ci_pass
+#     sshkeys = var.ssh_public
 
 #     //post run commands
 #     provisioner "remote-exec" {
@@ -399,8 +455,8 @@ resource "dns_a_record_set" "ipa"{
 #     connection {
 #         host = "192.168.1.16"
 #         type = "ssh"
-#         user = "${var.ci_user}"
-#         private_key = "${file("~/.ssh/id_rsa")}"
+#         user = var.ci_user
+#         private_key = file("~/.ssh/id_rsa")
 #     }
 
 # }

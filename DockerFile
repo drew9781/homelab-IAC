@@ -1,9 +1,10 @@
 FROM alpine:3.10 
 
-ENV TERRAFORM_VERSION=0.13.4
+ENV TERRAFORM_VERSION=0.14.7
 
 COPY ./secrets/aws.creds .
 COPY terraform-inventory.sh /usr/bin/
+COPY ansible.sh /usr/bin/
 COPY ansible /ansible
 COPY secrets/id_rsa /root/.ssh/id_rsa
 
