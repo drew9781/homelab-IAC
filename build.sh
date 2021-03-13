@@ -3,9 +3,10 @@ cp DockerFile.core tmp/Dockerfile
 cp inventory/core/core.tf tmp/
 cp secrets/proxmox.tfvars tmp/
 cp secrets/ansible_postgres.yml tmp/
+cp secrets/ansible-cds.yml tmp/
 cp -r ansible tmp/
 cd tmp
-if ! docker build . -t drew9781/iac-core:1.1; then
+if ! docker build . -t drew9781/iac-core:1.1 --no-cache; then
     exit 1
 fi
 cd .. && rm -rf tmp

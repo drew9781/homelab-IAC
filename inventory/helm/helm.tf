@@ -26,7 +26,7 @@ resource "helm_release" "redis" {
   repository = "https://charts.bitnami.com/bitnami"
   set {
     name  = "password"
-    value = "978!@Shlyn"
+    value = "password"
   }
   set {
     name = "global.storageClass"

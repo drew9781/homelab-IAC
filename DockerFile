@@ -2,11 +2,11 @@ FROM alpine:3.10
 
 ENV TERRAFORM_VERSION=0.14.7
 
-COPY ./secrets/aws.creds .
-COPY terraform-inventory.sh /usr/bin/
-COPY ansible.sh /usr/bin/
-COPY ansible /ansible
-COPY secrets/id_rsa /root/.ssh/id_rsa
+ADD ./secrets/aws.creds .
+ADD terraform-inventory.sh /usr/bin/
+ADD ./ansible.sh /ansible.sh
+ADD ansible /ansible
+ADD ./secrets/id_rsa /root/.ssh/id_rsa
 
 RUN apk update && apk add curl jq python bash ca-certificates git openssl unzip wget make go musl-dev openssh-client ansible && \
     cd /tmp && \
@@ -17,21 +17,13 @@ RUN apk update && apk add curl jq python bash ca-certificates git openssl unzip 
     go build . && \
     cp terraform-inventory /usr/bin/ && \
     cd /tmp && \
-    # git clone https://github.com/Telmate/terraform-provider-proxmox.git && \
-    # cd terraform-provider-proxmox && \
-    # go get github.com/Telmate/terraform-provider-proxmox/cmd/terraform-provider-proxmox && \
-    # go get github.com/Telmate/terraform-provider-proxmox/cmd/terraform-provisioner-proxmox && \
-    # go install github.com/Telmate/terraform-provider-proxmox/cmd/terraform-provider-proxmox && \
-    # go install github.com/Telmate/terraform-provider-proxmox/cmd/terraform-provisioner-proxmox && \
-    # make && \
-    # mkdir -p /root/.terraform.d/plugins/terraform.example.com/telmate/proxmox/1.0.0/linux_amd64/ && \
-    # cp bin/terraform-provider-proxmox /root/.terraform.d/plugins/terraform.example.com/telmate/proxmox/1.0.0/linux_amd64/ && \
-    # cp bin/terraform-provisioner-proxmox /root/.terraform.d/plugins/terraform.example.com/telmate/proxmox/1.0.0/linux_amd64/ && \
     mkdir /root/.aws && \
     cp /aws.creds /root/.aws/credentials && \
     ansible-galaxy install -r /ansible/requirements.yml && \
     rm -rf /tmp/* && \
     rm -rf /var/cache/apk/* && \
     rm -rf /var/tmp/* && \
-    rm -rf /aws.creds
+    rm -rf /aws.creds && \
+    chmod 600 /root/.ssh/id_rsa && \
+    touch /test
 

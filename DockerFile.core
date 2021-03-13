@@ -1,10 +1,12 @@
-FROM drew9781/proxmox-terraform:latest
+FROM drew9781/terraform-proxmox:latest
 
 RUN rm -r /ansible
+RUN rm -rf /root/.ansible/roles/cds
 
 COPY core.tf .
 COPY proxmox.tfvars .
 COPY ansible_postgres.yml /ansible/playbooks/vars/
+COPY ansible-cds.yml /ansible/playbooks/vars/
 COPY ansible /ansible
 COPY ansible/ansible.cfg /etc/ansible/ansible.cfg
 

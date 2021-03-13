@@ -1,0 +1,7 @@
+- hosts: cds
+  remote_user: aenglema
+  become: yes
+  roles:
+    - cds
+  vars_files:
+    - vars/ansible-cds.yml

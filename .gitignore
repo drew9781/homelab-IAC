@@ -9,3 +9,4 @@ secrets/id_rsa
 secrets/ansible_postgres.yml
 secrets/kubectl.conf
 secrets/kubctl.conf
+secrets/ansible-cds.yml

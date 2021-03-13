@@ -2,3 +2,5 @@
   src: https://github.com/bertvv/ansible-role-bind
 - name: postgresql
   src: https://github.com/geerlingguy/ansible-role-postgresql
+- name: cds
+  src: https://github.com/drew9781/ansible-role-cds
